@@ -1,0 +1,6 @@
+.env
+memoire_agent.json
+__pycache__/
+*.pyc
+node_modules/
+dist/
