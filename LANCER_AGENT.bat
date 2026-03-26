@@ -5,29 +5,34 @@ color 0A
 
 cd /d "%~dp0"
 
-:: Charger les variables du fichier .env si présent
-if exist .env (
-    for /f "usebackq tokens=1,* delims==" %%A in (".env") do (
-        if not "%%A"=="" if not "%%A:~0,1%"=="#" set "%%A=%%B"
-    )
-)
+echo.
+echo  =========================================================
+echo   AGENT TESTEUR QA — Sans IA (Playwright)
+echo  =========================================================
+echo.
+echo  Verifie que les dependances sont installees :
+echo    pip install playwright openpyxl
+echo    playwright install chromium
+echo.
 
-:: Vérifier que la clé est définie
-if "%ANTHROPIC_API_KEY%"=="" (
-    echo.
-    echo  ERREUR : ANTHROPIC_API_KEY non definie.
-    echo  Copie .env.example en .env et mets ta cle API dedans.
-    echo.
+:: Verifier que Python est disponible
+python --version > nul 2>&1
+if errorlevel 1 (
+    echo  ERREUR : Python introuvable. Installe Python 3.10+ et relance.
     pause
     exit /b 1
 )
 
-echo.
-echo  Agent Testeur QA pret.
-echo  Excel et Edge doivent etre ouverts avant de continuer.
-echo.
-pause
+:: Verifier que Playwright est installe
+python -c "import playwright" > nul 2>&1
+if errorlevel 1 (
+    echo  Installation de Playwright...
+    pip install playwright openpyxl
+    playwright install chromium
+)
 
+echo  Lancement de l'agent...
+echo.
 python agent_testeur.py
 
 echo.
